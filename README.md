@@ -17,6 +17,16 @@
 
 </div>
 
+## 📸 Screenshots
+
+### Desktop Experience
+![Desktop Light Mode](images/desktop_screenshot.png)
+*Clean, modern interface following Material Design principles*
+
+### Mobile Experience
+![Mobile Light Mode](images/mobile_screenshot.png)
+*Fully responsive design that works seamlessly on all devices*
+
 ## 🌟 What Makes EmojiCast Special?
 
 EmojiCast transforms weather forecasting into a delightful visual experience using **emoji-based weather icons** and **completely free APIs**. Built with vanilla JavaScript and Material Design principles, it offers comprehensive weather data without requiring any API keys or registration.
