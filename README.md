@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![EmojiCast Banner](https://via.placeholder.com/800x200/1976d2/ffffff?text=🌦️+EmojiCast+-+Beautiful+Weather+Forecasts)
+
 
 **A beautiful, responsive weather application with emoji-based weather icons and comprehensive forecasts**
 
