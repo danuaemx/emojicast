@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Now - 7 Day Forecast</title>
+    
+    <!-- Material Design CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mdc-top-app-bar">
+        <div class="mdc-top-app-bar__row">
+            <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                <span class="material-icons mdc-top-app-bar__navigation-icon">wb_sunny</span>
+                <span class="mdc-top-app-bar__title">EmojiCast</span>
+            </section>
+            <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+                <button class="mdc-icon-button unit-toggle-btn" id="unit-toggle" title="Switch temperature unit">
+                    <span class="unit-text" id="unit-text">C°</span>
+                </button>
+                <button class="mdc-icon-button theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+                <button class="mdc-icon-button" id="refresh-btn" onclick="getWeather()" title="Refresh weather">
+                    <span class="material-icons">refresh</span>
+                </button>
+            </section>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <!-- Loading Card -->
+        <div id="loading-card" class="mdc-card weather-card">
+            <div class="mdc-card__content loading-content">
+                <div class="loading-spinner">
+                    <div class="spinner-circle"></div>
+                </div>
+                <h2 class="mdc-typography--headline6 loading-text">Getting your location and weather...</h2>
+                <p class="mdc-typography--body2 loading-subtitle">Please wait a moment</p>
+            </div>
+        </div>
+
+        <!-- Error Card -->
+        <div id="error-card" class="mdc-card weather-card hidden">
+            <div class="mdc-card__content error-content">
+                <span class="material-icons error-icon">error_outline</span>
+                <h2 class="mdc-typography--headline6">Something went wrong</h2>
+                <p class="mdc-typography--body2">Unable to fetch weather data. Please check your connection and try again.</p>
+                <div class="mdc-card__actions">
+                    <button class="mdc-button mdc-button--raised" onclick="getWeather()">
+                        <span class="mdc-button__label">Try Again</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weather Info Cards -->
+        <div id="weather-container" class="weather-container hidden">
+            <!-- Location Card -->
+            <div class="mdc-card location-card">
+                <div class="mdc-card__content">
+                    <div class="location-header">
+                        <span class="material-icons location-icon">location_on</span>
+                        <div class="location-text">
+                            <h2 class="mdc-typography--headline6" id="location-name">Loading...</h2>
+                            <p class="mdc-typography--body2" id="location-details">Getting location...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Weather Card -->
+            <div class="mdc-card main-weather-card">
+                <div class="mdc-card__content">
+                    <div class="weather-main">
+                        <div class="weather-icon-container">
+                            <div class="weather-icon" id="weather-icon">☀️</div>
+                        </div>
+                        <div class="temperature-section">
+                            <div class="temperature-display">
+                                <span class="temperature" id="temperature">--°</span>
+                                <div class="temperature-unit" id="temperature-unit">C</div>
+                            </div>
+                            <div class="weather-description">
+                                <h3 class="mdc-typography--headline6" id="weather-desc">Loading...</h3>
+                                <p class="mdc-typography--body2">Feels like <span id="feels-like">--°</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Details Grid -->
+            <div class="details-grid">
+                <div class="mdc-card detail-card">
+                    <div class="mdc-card__content">
+                        <div class="detail-item">
+                            <span class="material-icons detail-icon">opacity</span>
+                            <div class="detail-text">
+                                <span class="mdc-typography--body2 detail-label">Humidity</span>
+                                <span class="mdc-typography--headline6" id="humidity">--%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdc-card detail-card">
+                    <div class="mdc-card__content">
+                        <div class="detail-item">
+                            <span class="material-icons detail-icon">air</span>
+                            <div class="detail-text">
+                                <span class="mdc-typography--body2 detail-label">Wind Speed</span>
+                                <span class="mdc-typography--headline6" id="wind-speed">-- km/h</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdc-card detail-card">
+                    <div class="mdc-card__content">
+                        <div class="detail-item">
+                            <span class="material-icons detail-icon">visibility</span>
+                            <div class="detail-text">
+                                <span class="mdc-typography--body2 detail-label">Visibility</span>
+                                <span class="mdc-typography--headline6" id="visibility">-- km</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdc-card detail-card">
+                    <div class="mdc-card__content">
+                        <div class="detail-item">
+                            <span class="material-icons detail-icon">compress</span>
+                            <div class="detail-text">
+                                <span class="mdc-typography--body2 detail-label">Pressure</span>
+                                <span class="mdc-typography--headline6" id="pressure">-- hPa</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdc-card detail-card uv-index-card" id="uv-index-card">
+                    <div class="mdc-card__content">
+                        <div class="detail-item">
+                            <span class="material-icons detail-icon">wb_twilight</span>
+                            <div class="detail-text">
+                                <span class="mdc-typography--body2 detail-label">UV Index</span>
+                                <span class="mdc-typography--headline6" id="uv-index">--</span>
+                                <span class="uv-level" id="uv-level">Unknown</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdc-card detail-card">
+                    <div class="mdc-card__content">
+                        <div class="detail-item">
+                            <span class="material-icons detail-icon">wb_sunny</span>
+                            <div class="detail-text">
+                                <span class="mdc-typography--body2 detail-label">Sunrise</span>
+                                <span class="mdc-typography--headline6" id="sunrise">--:--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdc-card detail-card">
+                    <div class="mdc-card__content">
+                        <div class="detail-item">
+                            <span class="material-icons detail-icon">wb_twilight</span>
+                            <div class="detail-text">
+                                <span class="mdc-typography--body2 detail-label">Sunset</span>
+                                <span class="mdc-typography--headline6" id="sunset">--:--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 24-Hour Temperature Graph Card -->
+            <div class="mdc-card hourly-graph-card">
+                <div class="mdc-card__content">
+                    <div class="forecast-header">
+                        <span class="material-icons">trending_up</span>
+                        <h2 class="mdc-typography--headline6">24-Hour Temperature</h2>
+                        <div class="graph-controls">
+                            <button class="graph-toggle active" data-type="temperature" title="Temperature">
+                                <span class="material-icons">thermostat</span>
+                            </button>
+                            <button class="graph-toggle" data-type="humidity" title="Humidity">
+                                <span class="material-icons">opacity</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="temperature-graph-container">
+                        <canvas id="temperature-graph" width="800" height="300"></canvas>
+                        <div class="graph-legend">
+                            <div class="legend-item">
+                                <div class="legend-color temperature-line"></div>
+                                <span id="legend-label">Temperature (°C)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hourly Forecast Card -->
+            <div class="mdc-card hourly-card">
+                <div class="mdc-card__content">
+                    <div class="forecast-header">
+                        <span class="material-icons">schedule</span>
+                        <h2 class="mdc-typography--headline6">Hourly Weather</h2>
+                    </div>
+                    <div id="hourly-container" class="hourly-container">
+                        <!-- Hourly items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7-Day Forecast Card -->
+            <div class="mdc-card forecast-card">
+                <div class="mdc-card__content">
+                    <div class="forecast-header">
+                        <span class="material-icons">date_range</span>
+                        <h2 class="mdc-typography--headline6">7-Day Forecast</h2>
+                    </div>
+                    <div id="forecast-container" class="forecast-container">
+                        <!-- Forecast items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Last Updated Card -->
+            <div class="mdc-card last-updated-card">
+                <div class="mdc-card__content">
+                    <div class="last-updated">
+                        <span class="material-icons">schedule</span>
+                        <span class="mdc-typography--body2">Last updated: <span id="last-updated">--</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="mdc-typography--body2">
+                Powered by <a href="https://ipapi.co" target="_blank">ipapi.co</a> and 
+                <a href="https://open-meteo.com" target="_blank">Open-Meteo</a>
+            </p>
+            <p class="mdc-typography--caption">
+                100% Free APIs - No registration required
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
